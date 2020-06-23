@@ -1,6 +1,5 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
 
 var mdAutenticacion = require('../middlewares/autenticacion');
 
@@ -13,7 +12,12 @@ var Usuario = require('../models/usuario');
 // ===============================================
 app.get('/', (req, resp, next) => {
 
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+
     Usuario.find({}, 'nombre email img role')
+        .skip(desde)
+        .limit(5)
         .exec(
             (err, usuarios) => {
                 if (err) {
@@ -23,12 +27,24 @@ app.get('/', (req, resp, next) => {
                         errors: err
                     });
                 }
-                resp.status(200).json({
-                    ok: true,
-                    usuarios: usuarios,
-                    mensaje: 'Get de usuarios'
+
+                Usuario.count({}, (err, conteo) => {
+                    if (err) {
+                        return resp.status(500).json({
+                            ok: false,
+                            mensaje: 'Error en el conteo de usuarios',
+                            errors: err
+                        });
+                    }
+                    resp.status(200).json({
+                        ok: true,
+                        usuarios: usuarios,
+                        mensaje: 'Get de usuarios',
+                        total: conteo
+                    });
                 });
-            })
+
+            });
 
 });
 
@@ -76,7 +92,7 @@ app.put('/:id', mdAutenticacion.verificarToken, (req, resp) => {
                 });
             }
 
-            usuarioGuardado.password = ':)'
+            usuarioGuardado.password = ':)';
 
             resp.status(200).json({
                 ok: true,
@@ -154,7 +170,7 @@ app.delete('/:id', mdAutenticacion.verificarToken, (req, resp) => {
             ok: true,
             usuario: usuarioBorrado
         });
-    })
-})
+    });
+});
 
 module.exports = app;
