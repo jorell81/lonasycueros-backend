@@ -9,6 +9,12 @@ var bodyParser = require('body-parser');
 // Inicializar variables
 var app = express();
 
+// CORS
+var cors = require('cors');
+
+app.use(cors());
+
+
 
 // Body Parser
 // parse application/x-www-form-urlencoded
@@ -29,11 +35,18 @@ var imagenesRoutes = require('./routes/imagenes');
 
 
 // Conexion a la base de datos
-mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, resp) => {
+mongoose.connect('mongodb://localhost:27017/hospitalDB', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    console.log('Base de datos: \x1b[32m%s\x1b[0m', 'online');
+});
+// Conexion antigua
+/* mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, {useNewUrlParser: true} ) => {
     if (err) throw err;
 
     console.log('Base de datos: \x1b[32m%s\x1b[0m', 'online');
-});
+}); */
 
 // Rutas
 app.use('/usuario', usuarioRoutes);

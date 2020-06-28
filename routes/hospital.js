@@ -29,7 +29,7 @@ app.get('/', (req, resp, next) => {
                         errors: err
                     });
                 }
-                Hospital.count({}, (err, conteo) => {
+                Hospital.countDocuments({}, (err, conteo) => {
                     if (err) {
                         return resp.status(500).json({
                             ok: false,
@@ -47,6 +47,38 @@ app.get('/', (req, resp, next) => {
 
             });
 
+});
+
+// ==========================================
+// Obtener Hospital por ID
+// ==========================================
+app.get('/:id', (req, resp) => {
+    var id = req.params.id;
+
+    Hospital.findById(id)
+        .populate('usuario', 'nombre img email')
+        .exec((err, hospital) => {
+            if (err) {
+                return resp.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar hospital',
+                    errors: err
+                });
+            }
+
+            if (!hospital) {
+                return resp.status(400).json({
+                    ok: false,
+                    mensaje: 'El hospital con el id ' + id + 'no existe',
+                    errors: { message: 'No existe un hospital con ese ID' }
+                });
+            }
+
+            resp.status(200).json({
+                ok: true,
+                hospital: hospital
+            });
+        });
 });
 
 // ===============================================
