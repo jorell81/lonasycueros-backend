@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
 
-
+const Enviroment = (process.env.PORT || '').length > 0 ? '/ServLonasyCueros' : '';
+const Port = process.env.PORT || 3000;
 
 // Inicializar variables
 var app = express();
@@ -26,16 +27,19 @@ app.use(bodyParser.json());
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
-var hospitalRoutes = require('./routes/hospital');
-var medicoRoutes = require('./routes/medico');
+var categoriaRoutes = require('./routes/categoria');
+var subcategoriaRoutes = require('./routes/subcategoria');
+var productoRoutes = require('./routes/producto');
+var descuentoRoutes = require('./routes/descuento');
+var clienteRoutes = require('./routes/cliente');
 var busquedaRoutes = require('./routes/busqueda');
-var uploadRoutes = require('./routes/upload');
-var imagenesRoutes = require('./routes/imagenes');
+var testRoutes = require('./routes/test');
 
 
 
 // Conexion a la base de datos
-mongoose.connect('mongodb://localhost:27017/hospitalDB', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
+// mongoose.connect('mongodb://localhost:27017/hospitalDB', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
+mongoose.connect('mongodb://localhost:27017/lonasycueros', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -49,19 +53,22 @@ db.once('open', function() {
 }); */
 
 // Rutas
-app.use('/usuario', usuarioRoutes);
-app.use('/hospital', hospitalRoutes);
-app.use('/medico', medicoRoutes);
-app.use('/login', loginRoutes);
-app.use('/busqueda', busquedaRoutes);
-app.use('/upload', uploadRoutes);
-app.use('/img', imagenesRoutes);
-app.use('/', appRoutes);
+app.use(Enviroment + '/usuario', usuarioRoutes);
+app.use(Enviroment + '/login', loginRoutes);
+app.use(Enviroment + '/categoria', categoriaRoutes);
+app.use(Enviroment + '/subcategoria', subcategoriaRoutes);
+app.use(Enviroment + '/producto', productoRoutes);
+app.use(Enviroment + '/descuento', descuentoRoutes);
+app.use(Enviroment + '/cliente', clienteRoutes);
+app.use(Enviroment + '/busqueda', busquedaRoutes);
+app.use(Enviroment + '/test', testRoutes);
+app.use(Enviroment + '/', appRoutes);
 
 
 
 
 // Escuchar peticiones
-app.listen(process.env.port || 3000, () => {
+// Escuchar peticiones
+app.listen(Port, () => {
     console.log('Express server corriendo en el puerto 3000: \x1b[32m%s\x1b[0m', 'online');
 });

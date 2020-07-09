@@ -17,6 +17,8 @@
         "express-fileupload": "^1.1.7-alpha.3",
         "google-auth-library": "^6.0.2",
         "jsonwebtoken": "^8.5.1",
+        "moment": "^2.27.0",
+        "moment-timezone": "^0.5.31",
         "mongoose": "^5.9.19",
         "mongoose-unique-validator": "^2.0.3"
     },

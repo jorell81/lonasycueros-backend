@@ -53,7 +53,8 @@ app.get('/', (req, resp, next) => {
 // ===============================================
 // Actualizar usuario
 // ===============================================
-app.put('/:id', mdAutenticacion.verificarToken, (req, resp) => {
+app.put('/:id', [mdAutenticacion.verificarToken, mdAutenticacion.verificarADMIN_o_MismoUsuario], (req, resp) => {
+    // app.put('/:id', (req, resp) => {
     var id = req.params.id;
     var body = req.body;
 
@@ -118,7 +119,6 @@ app.post('/', (req, resp) => {
         apellido: body.apellido,
         email: body.email,
         password: bcrypt.hashSync(body.password, 10),
-        img: body.img,
         role: body.role
     });
 
@@ -144,7 +144,7 @@ app.post('/', (req, resp) => {
 // ===============================================
 // Borrar un usuario por el id
 // ===============================================
-app.delete('/:id', mdAutenticacion.verificarToken, (req, resp) => {
+app.delete('/:id', [mdAutenticacion.verificarToken, mdAutenticacion.verificarADMIN_ROLE], (req, resp) => {
 
 
     var id = req.params.id;

@@ -1,0 +1,2 @@
+Express server corriendo en el puerto 3000: [32monline[0m
+Base de datos: [32monline[0m
