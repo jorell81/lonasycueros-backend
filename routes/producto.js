@@ -15,7 +15,7 @@ app.get('/', (req, resp, next) => {
     Producto.find({})
         .skip(desde)
         .limit(10)
-        .populate('idSubCategoria', 'nombre categoria')
+        .populate('idSubCategoria', 'nombre idCategoria')
         .exec(
             (err, productos) => {
                 if (err) {

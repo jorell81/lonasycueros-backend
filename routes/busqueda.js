@@ -122,7 +122,7 @@ function buscarProductos(busqueda, regex) {
 
     return new Promise((resolve, reject) => {
         Producto.find({ nombre: regex })
-            .populate('subccategorias', 'nombre idCategoria')
+            .populate('idSubCategoria', 'nombre idCategoria')
             .exec((err, productos) => {
                 if (err) {
                     reject('Error al cargar productos', err);

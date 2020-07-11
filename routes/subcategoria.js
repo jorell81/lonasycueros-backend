@@ -44,6 +44,40 @@ app.get('/', (req, resp) => {
 });
 
 // ===============================================
+// Obtener las sub categorías por Id categoria
+// ===============================================
+app.get('/:id', [mdAutenticacion.verificarToken, mdAutenticacion.verificarADMIN_ROLE], (req, resp) => {
+    var id = req.params.id;
+    SubCategoria.find({ idCategoria: id }, null, { sort: { nombre: 1 } })
+        .exec(
+            (err, subcategorias) => {
+                if (err) {
+                    return resp.status(500).json({
+                        ok: false,
+                        mensaje: 'Error cargando sub categorías',
+                        errors: err
+                    });
+                }
+                SubCategoria.countDocuments({}, (err, conteo) => {
+                    if (err) {
+                        return resp.status(500).json({
+                            ok: false,
+                            mensaje: 'Error en el conteo de sub categorías',
+                            errors: err
+                        });
+                    }
+                    resp.status(200).json({
+                        ok: true,
+                        subcategorias: subcategorias,
+                        mensaje: 'Get de Sub Categorías',
+                        total: conteo
+                    });
+                });
+
+            });
+});
+
+// ===============================================
 // Crear nueva Sub Categoría
 // ===============================================
 app.post('/', [mdAutenticacion.verificarToken, mdAutenticacion.verificarADMIN_ROLE], (req, resp) => {
@@ -71,6 +105,8 @@ app.post('/', [mdAutenticacion.verificarToken, mdAutenticacion.verificarADMIN_RO
     });
 
 });
+
+
 // ===============================================
 // Actualizar Sub Categoría
 // ===============================================
